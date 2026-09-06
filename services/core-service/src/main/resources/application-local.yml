@@ -1,0 +1,12 @@
+# Local development settings
+logging:
+  level:
+    com.phylax: DEBUG
+    org.hibernate: TRACE
+
+# No database yet - we'll add PostgreSQL later
+# Just show detailed logs for now
+
+phylax:
+  environment: "local"
+  debug: true
