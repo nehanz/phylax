@@ -1,24 +1,15 @@
 server:
-  port: ${SERVER_PORT:8081}
+  port: ${SERVER_PORT:8083}
 
 spring:
   application:
-    name: core-service
+    name: analytics-service
 
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/phylax}
     username: ${DATABASE_USERNAME:postgres}
     password: ${DATABASE_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
-
-  jpa:
-    hibernate:
-      ddl-auto: ${JPA_DDL_AUTO:update}
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
-    show-sql: ${JPA_SHOW_SQL:false}
 
   data:
     redis:

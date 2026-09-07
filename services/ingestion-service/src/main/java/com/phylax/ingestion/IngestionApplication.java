@@ -1,11 +1,11 @@
-package com.phylax.core;
+package com.phylax.ingestion;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CoreApplication {
+public class IngestionApplication {
     public static void main(String[] args) {
-        SpringApplication.run(CoreApplication.class, args);
+        SpringApplication.run(IngestionApplication.class, args);
     }
 }

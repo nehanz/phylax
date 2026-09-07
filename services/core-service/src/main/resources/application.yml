@@ -1,39 +1,33 @@
-# Server configuration
 server:
-  port: 8081
-  error:
-    include-message: always
+  port: ${SERVER_PORT:8081}
 
-# Application identity
 spring:
   application:
     name: core-service
 
-# Actuator configuration (health check endpoints)
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/phylax}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: ${JPA_DDL_AUTO:update}
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: ${JPA_SHOW_SQL:false}
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics
-  endpoint:
-    health:
-      show-details: always
-      probes:
-        enabled: true
-  health:
-    livenessstate:
-      enabled: true
-    readinessstate:
-      enabled: true
-
-# Logging
-logging:
-  level:
-    com.phylax: DEBUG
-    org.springframework: INFO
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} - %-5level - [%thread] - %logger{36} - %msg%n"
-
-# Custom Phylax settings
-phylax:
-  version: "0.1.0"
+        include: health,info

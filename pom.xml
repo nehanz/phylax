@@ -17,7 +17,11 @@
     
     <!-- List of microservices -->
     <modules>
+        <module>services/api-gateway</module>
         <module>services/core-service</module>
+        <module>services/ingestion-service</module>
+        <module>services/behavior-engine</module>
+        <module>services/analytics-service</module>
     </modules>
     
     <!-- Shared versions across all services -->
@@ -50,12 +54,21 @@
         </dependencies>
     </dependencyManagement>
     
-    <!-- Build plugin shared across all services -->
+    <!-- Build plugin shared across all services (inherited by all modules) -->
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot.version}</version>
+                <executions>
+                    <execution>
+                        <id>default-repackage</id>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

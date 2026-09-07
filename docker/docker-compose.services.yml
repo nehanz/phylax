@@ -1,0 +1,83 @@
+services:
+  api-gateway:
+    build:
+      context: ..
+      dockerfile: services/api-gateway/Dockerfile
+    ports:
+      - "${API_GATEWAY_PORT:-8080}:${API_GATEWAY_PORT:-8080}"
+    environment:
+      SERVER_PORT: ${API_GATEWAY_PORT:-8080}
+    depends_on:
+      - core-service
+    networks:
+      - phylax-network
+
+  core-service:
+    build:
+      context: ..
+      dockerfile: services/core-service/Dockerfile
+    ports:
+      - "${CORE_SERVICE_PORT:-8081}:${CORE_SERVICE_PORT:-8081}"
+    environment:
+      SERVER_PORT: ${CORE_SERVICE_PORT:-8081}
+      DATABASE_URL: ${DOCKER_DATABASE_URL:-${DATABASE_URL:-jdbc:postgresql://postgres:5432/phylax}}
+      DATABASE_USERNAME: ${DATABASE_USERNAME:-postgres}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-postgres}
+      REDIS_HOST: ${DOCKER_REDIS_HOST:-${REDIS_HOST:-redis}}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+    networks:
+      - phylax-network
+
+  ingestion-service:
+    build:
+      context: ..
+      dockerfile: services/ingestion-service/Dockerfile
+    ports:
+      - "${INGESTION_SERVICE_PORT:-8082}:${INGESTION_SERVICE_PORT:-8082}"
+    environment:
+      SERVER_PORT: ${INGESTION_SERVICE_PORT:-8082}
+      DATABASE_URL: ${DOCKER_DATABASE_URL:-${DATABASE_URL:-jdbc:postgresql://postgres:5432/phylax}}
+      DATABASE_USERNAME: ${DATABASE_USERNAME:-postgres}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-postgres}
+      KAFKA_BOOTSTRAP_SERVERS: ${DOCKER_KAFKA_BOOTSTRAP_SERVERS:-kafka:29092}
+    networks:
+      - phylax-network
+
+  behavior-engine:
+    build:
+      context: ..
+      dockerfile: services/behavior-engine/Dockerfile
+    ports:
+      - "${BEHAVIOR_ENGINE_PORT:-8085}:${BEHAVIOR_ENGINE_PORT:-8085}"
+    environment:
+      SERVER_PORT: ${BEHAVIOR_ENGINE_PORT:-8085}
+      DATABASE_URL: ${DOCKER_DATABASE_URL:-${DATABASE_URL:-jdbc:postgresql://postgres:5432/phylax}}
+      DATABASE_USERNAME: ${DATABASE_USERNAME:-postgres}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-postgres}
+      KAFKA_BOOTSTRAP_SERVERS: ${DOCKER_KAFKA_BOOTSTRAP_SERVERS:-kafka:29092}
+      CLICKHOUSE_URL: ${DOCKER_CLICKHOUSE_URL:-${CLICKHOUSE_URL:-jdbc:clickhouse://clickhouse:8123/default}}
+    networks:
+      - phylax-network
+
+  analytics-service:
+    build:
+      context: ..
+      dockerfile: services/analytics-service/Dockerfile
+    ports:
+      - "${ANALYTICS_SERVICE_PORT:-8083}:${ANALYTICS_SERVICE_PORT:-8083}"
+    environment:
+      SERVER_PORT: ${ANALYTICS_SERVICE_PORT:-8083}
+      DATABASE_URL: ${DOCKER_DATABASE_URL:-${DATABASE_URL:-jdbc:postgresql://postgres:5432/phylax}}
+      DATABASE_USERNAME: ${DATABASE_USERNAME:-postgres}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-postgres}
+      CLICKHOUSE_URL: ${DOCKER_CLICKHOUSE_URL:-${CLICKHOUSE_URL:-jdbc:clickhouse://clickhouse:8123/default}}
+      REDIS_HOST: ${DOCKER_REDIS_HOST:-${REDIS_HOST:-redis}}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+    networks:
+      - phylax-network
+
+networks:
+  phylax-network:
+    external: true
