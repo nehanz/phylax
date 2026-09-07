@@ -21,6 +21,7 @@ if "%1"=="stop" goto stop
 if "%1"=="run" goto run
 if "%1"=="build" goto build
 if "%1"=="health" goto health
+if "%1"=="ui" goto ui
 
 echo Unknown command: %1
 goto help
@@ -71,6 +72,11 @@ for %%P in (8080 8081 8082 8083 8085) do (
 )
 goto end
 
+:ui
+echo Starting Phylax Dashboard on port 3000...
+cd "frontend\dashboard" && npm run dev
+goto end
+
 :help
 echo Phylax Development Helper
 echo.
@@ -83,6 +89,7 @@ echo   full         Start all services and infrastructure in Docker
 echo   full:down    Stop all containers
 echo   stop         Stop all running Phylax containers
 echo   run ^<name^>   Run a specific service locally (e.g., dev.bat run core-service)
+echo   ui           Start the frontend dashboard (port 3000)
 echo   build        Build all microservices with Maven
 echo   health       Check health endpoints of running services
 goto end

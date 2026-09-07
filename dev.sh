@@ -49,6 +49,10 @@ case "$1" in
       curl -s -o /dev/null -w "%{http_code}\n" "http://localhost:$port/api/health" 2>/dev/null || echo "UNREACHABLE"
     done
     ;;
+  ui)
+    echo "Starting Phylax Dashboard on port 3000..."
+    (cd frontend/dashboard && npm run dev)
+    ;;
   *)
     echo "Phylax Development Helper"
     echo ""
@@ -61,6 +65,7 @@ case "$1" in
     echo "  full:down    Stop all containers"
     echo "  stop         Stop all running Phylax containers"
     echo "  run <name>   Run a specific service locally (e.g., ./dev.sh run core-service)"
+    echo "  ui           Start the frontend dashboard (port 3000)"
     echo "  build        Build all microservices with Maven"
     echo "  health       Check health endpoints of running services"
     ;;
