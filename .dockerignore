@@ -1,0 +1,30 @@
+# Git
+.git
+.github
+
+# Node.js dependencies
+**/node_modules
+
+# Node.js build output
+**/dist
+**/build
+
+# Java / Maven build output
+**/target
+
+# IDE files
+**/.idea
+**/.vscode
+**/*.iml
+
+# Environment files
+.env
+.env.*
+
+# Logs
+**/*.log
+**/logs
+
+# OS files
+.DS_Store
+Thumbs.db

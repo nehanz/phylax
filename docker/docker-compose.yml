@@ -151,6 +151,20 @@ services:
     networks:
       - phylax-network
 
+  dashboard:
+    build:
+      context: ..
+      dockerfile: frontend/dashboard/Dockerfile
+
+    ports:
+      - "${DASHBOARD_PORT:-3000}:3000"
+
+    depends_on:
+      - api-gateway
+
+    networks:
+      - phylax-network
+
 networks:
   phylax-network:
     driver: bridge
