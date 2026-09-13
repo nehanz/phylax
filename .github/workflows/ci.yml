@@ -1,0 +1,123 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+
+  push:
+    branches:
+      - main
+      - dev
+
+permissions:
+  contents: read
+
+# Cancel older CI runs when a newer commit is pushed.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  # Backend: Build + Checkstyle
+  backend:
+    name: Backend Build & Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Build and check backend
+        run: mvn -B clean verify -DskipTests
+
+
+  # Frontend: ESLint
+  frontend-quality:
+    name: Frontend Code Quality
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend/dashboard
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: frontend/dashboard/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run lint
+        run: npm run lint
+
+
+  # Frontend: TypeScript + Vite build
+  frontend-build:
+    name: Frontend Build
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend/dashboard
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: frontend/dashboard/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build
+
+
+  # Docker: Build all application images
+  docker-build:
+    name: Docker Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build API Gateway image
+        run: docker build -t phylax/api-gateway:ci -f services/api-gateway/Dockerfile .
+
+      - name: Build Core Service image
+        run: docker build -t phylax/core-service:ci -f services/core-service/Dockerfile .
+
+      - name: Build Ingestion Service image
+        run: docker build -t phylax/ingestion-service:ci -f services/ingestion-service/Dockerfile .
+
+      - name: Build Behavior Engine image
+        run: docker build -t phylax/behavior-engine:ci -f services/behavior-engine/Dockerfile .
+
+      - name: Build Analytics Service image
+        run: docker build -t phylax/analytics-service:ci -f services/analytics-service/Dockerfile .
+
+      - name: Build Dashboard image
+        run: docker build -t phylax/dashboard:ci -f frontend/dashboard/Dockerfile .
