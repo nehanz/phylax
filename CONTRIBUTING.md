@@ -58,6 +58,7 @@ We follow the [Conventional Commits](https://www.conventionalcommits.org/) speci
 * Follow standard Spring Boot idioms and clean architecture.
 * Keep controllers thin; business logic belongs in service classes.
 * Write unit tests for new service logic using JUnit 5 and Mockito.
+* All services inherit Checkstyle rules from root `pom.xml`; fix `checkstyle.xml` violations before PR.
 
 ### TypeScript / Frontend
 * Write strict, type-safe TypeScript (no `any` unless strictly justified).
@@ -67,8 +68,10 @@ We follow the [Conventional Commits](https://www.conventionalcommits.org/) speci
 ---
 
 ## Pull Request Process
-1. Ensure automated checks pass:
-   - Backend: `mvn test`
+1. Ensure automated checks pass before opening a PR:
+   - Java quality / lint: `mvn checkstyle:check`
+   - Java tests: `mvn test`
+   - Build / verify: `mvn verify`
    - Frontend: `cd frontend/dashboard && npm run build`
 2. Open a Pull Request against `main`.
 3. Provide a clear description of changes and reference relevant issues (e.g., `Closes #42`).
